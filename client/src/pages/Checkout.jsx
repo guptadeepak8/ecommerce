@@ -44,7 +44,7 @@ const handleAddress=(e)=>{
 }
 
 const handlePayment=(e)=>{
-  console.log(e.target.value);
+
   setSelectedPayMethod(e.target.value)
 }
 
