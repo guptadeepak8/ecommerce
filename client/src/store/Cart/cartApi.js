@@ -1,0 +1,41 @@
+export function addCart(items) {
+  return new Promise(async (resolve) => {
+    const response = await fetch("http://localhost:3000/cart", {
+      method: "POST",
+      body: JSON.stringify(items),
+      headers: { "content-type": "application/json" },
+    });
+    const data = await response.json();
+    resolve({ data });
+  });
+}
+
+export function fetchItemsById(userId) {
+  return new Promise(async (resolve) =>{
+    const response = await fetch('http://localhost:3000/cart?user='+userId) 
+    const data = await response.json()
+    resolve({data})
+  }
+  );
+}
+export function updateCart(item) {
+  return new Promise(async (resolve) => {
+    const response = await fetch("http://localhost:3000/cart"+item.id, {
+      method: "PATCH",
+      body: JSON.stringify(item),
+      headers: { "content-type": "application/json" },
+    });
+    const data = await response.json();
+    resolve({ data });
+  });
+}
+export function deleteItems(itemId) {
+  return new Promise(async (resolve) => {
+    const response = await fetch("http://localhost:3000/cart/"+itemId, {
+      method: "DELETE",
+      headers: { "content-type": "application/json" },
+    });
+    const data = await response.json();
+    resolve({ data:{id:itemId} });
+  });
+}
