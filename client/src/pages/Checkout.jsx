@@ -1,66 +1,84 @@
-
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteCartAsync, selectCart, updateCartAsync } from '../store/Cart/CartSlice';
+import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteCartAsync,
+  selectCart,
+  updateCartAsync,
+} from "../store/Cart/CartSlice";
 import { useForm } from "react-hook-form";
-import { selectloggedInUser, updateUserAsync } from '../store/Auth/authSlice';
-import { Navigate } from 'react-router-dom';
-import { useState } from 'react';
+import { selectloggedInUser, updateUserAsync } from "../store/Auth/authSlice";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { createOrderAsync, selectCurrentOrder } from "../store/order/orderSlice";
 
-
-const addresses=[{
-  name:'ksksk',
-  street:'ddddd',
-  pinCode:2222,
-  phone:+917377333333,
-  city:'mumbai'
-}]
+const addresses = [
+  {
+    name: "ksksk",
+    street: "ddddd",
+    pinCode: 2222,
+    phone: +917377333333,
+    city: "mumbai",
+  },
+];
 export default function Checkout() {
- 
-  const [selectedAddress,setselectedAddress]=useState(null)
-  const [selectedPayMethod,setSelectedPayMethod]=useState('cash')
+  const [selectedAddress, setselectedAddress] = useState(null);
+  const [selectedPayMethod, setSelectedPayMethod] = useState("cash");
 
   const {
     register,
-        handleSubmit,
-        watch,
-        reset,
-        formState: { errors },
-      } = useForm();
-      const user=useSelector(selectloggedInUser)
-  const products=useSelector(selectCart)
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm();
+  const user = useSelector(selectloggedInUser);
+  const products = useSelector(selectCart);
+  const currentOrder=useSelector(selectCurrentOrder)
+  const navigate=useNavigate();
+  const dispatch = useDispatch();
 
-  const dispatch=useDispatch();
+  const totalAmount = products.reduce(
+    (amount, item) =>
+      Math.round(item.price * (1 - item.discountPercentage / 100)) * item.qty +
+      amount,
+    0
+  );
 
-  const totalAmount=products.reduce((amount,item)=>(Math.round(item.price*(1-item.discountPercentage/100)))*item.qty+amount,0)
+  const handleRemove = (itemId) => {
+    dispatch(deleteCartAsync(itemId));
+  };
 
+  const handleAddress = (e) => {
+    setselectedAddress(user.address[e.target.value]);
+  };
 
-  const handleRemove=(itemId)=>{
-    dispatch(deleteCartAsync(itemId))
+  const handlePayment = (e) => {
+    setSelectedPayMethod(e.target.value);
+  };
+
+  const handleOrders=()=>{
+    if(selectedAddress && selectedPayMethod){
+      let order={products,totalAmount,user,selectedAddress,selectedPayMethod,status:'pending'}
+      dispatch(createOrderAsync(order))
+    }
   }
-
-const handleAddress=(e)=>{
-  setselectedAddress(user.address[e.target.value])
-}
-
-const handlePayment=(e)=>{
-
-  setSelectedPayMethod(e.target.value)
-}
 
   return (
     <>
-    {!products.length && <Navigate to='/' replace={true}/>}
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {!products.length && <Navigate to="/" replace={true} />}
+      {currentOrder && <Navigate to={`/order-success/${currentOrder.id}`} replace={true} />}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
           <div className="lg:col-span-3">
             {/* This form is for address */}
             <form
               className="bg-white px-5 py-12 mt-12"
               noValidate
-              onSubmit={handleSubmit((data)=>{
-                 dispatch(updateUserAsync({...user,address:[...user.address,data]}))
-                 reset();
+              onSubmit={handleSubmit((data) => {
+                dispatch(
+                  updateUserAsync({ ...user, address: [...user.address, data] })
+                );
+                reset();
               })}
             >
               <div className="space-y-12">
@@ -83,8 +101,8 @@ const handlePayment=(e)=>{
                       <div className="mt-2">
                         <input
                           type="text"
-                          {...register('name', {
-                            required: 'name is required',
+                          {...register("name", {
+                            required: "name is required",
                           })}
                           id="name"
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -105,8 +123,8 @@ const handlePayment=(e)=>{
                       <div className="mt-2">
                         <input
                           id="email"
-                          {...register('email', {
-                            required: 'email is required',
+                          {...register("email", {
+                            required: "email is required",
                           })}
                           type="email"
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -127,8 +145,8 @@ const handlePayment=(e)=>{
                       <div className="mt-2">
                         <input
                           id="phone"
-                          {...register('phone', {
-                            required: 'phone is required',
+                          {...register("phone", {
+                            required: "phone is required",
                           })}
                           type="tel"
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -149,8 +167,8 @@ const handlePayment=(e)=>{
                       <div className="mt-2">
                         <input
                           type="text"
-                          {...register('street', {
-                            required: 'street is required',
+                          {...register("street", {
+                            required: "street is required",
                           })}
                           id="street"
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -173,8 +191,8 @@ const handlePayment=(e)=>{
                       <div className="mt-2">
                         <input
                           type="text"
-                          {...register('city', {
-                            required: 'city is required',
+                          {...register("city", {
+                            required: "city is required",
                           })}
                           id="city"
                           autoComplete="address-level2"
@@ -196,8 +214,8 @@ const handlePayment=(e)=>{
                       <div className="mt-2">
                         <input
                           type="text"
-                          {...register('state', {
-                            required: 'state is required',
+                          {...register("state", {
+                            required: "state is required",
                           })}
                           id="state"
                           autoComplete="address-level1"
@@ -219,8 +237,8 @@ const handlePayment=(e)=>{
                       <div className="mt-2">
                         <input
                           type="text"
-                          {...register('pinCode', {
-                            required: 'pinCode is required',
+                          {...register("pinCode", {
+                            required: "pinCode is required",
                           })}
                           id="pinCode"
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -237,7 +255,7 @@ const handlePayment=(e)=>{
 
                 <div className="mt-6 flex items-center justify-end gap-x-6">
                   <button
-                    onClick={e=>reset()}
+                    onClick={(e) => reset()}
                     type="button"
                     className="text-sm font-semibold leading-6 text-gray-900"
                   >
@@ -313,7 +331,7 @@ const handlePayment=(e)=>{
                         onChange={handlePayment}
                         value="cash"
                         type="radio"
-                        checked={selectedPayMethod==="cash"}
+                        checked={selectedPayMethod === "cash"}
                         className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                       />
                       <label
@@ -329,7 +347,7 @@ const handlePayment=(e)=>{
                         name="payments"
                         value="card"
                         type="radio"
-                        checked={selectedPayMethod==="card"}
+                        checked={selectedPayMethod === "card"}
                         onChange={handlePayment}
                         className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                       />
@@ -367,18 +385,19 @@ const handlePayment=(e)=>{
                           <div>
                             <div className="flex justify-between text-base font-medium text-gray-900">
                               <h3>
-                                <a href={item.id}>
-                                  {item.title}
-                                </a>
+                                <a href={item.id}>{item.title}</a>
                               </h3>
                               <p className="ml-4">
-                                ${Math.round(item.price*(1-item.discountPercentage/100))}
+                                $
+                                {Math.round(
+                                  item.price *
+                                    (1 - item.discountPercentage / 100)
+                                )}
                               </p>
                             </div>
                             <p className="mt-1 text-sm text-gray-500">
                               {item.brand}
                             </p>
-
                           </div>
                           <div className="flex flex-1 items-end justify-between text-sm">
                             <div className="text-gray-500">
@@ -392,7 +411,7 @@ const handlePayment=(e)=>{
 
                             <div className="flex">
                               <button
-                                onClick={()=>handleRemove(item.id)}
+                                onClick={() => handleRemove(item.id)}
                                 type="button"
                                 className="font-medium text-indigo-600 hover:text-indigo-500"
                               >
@@ -400,7 +419,6 @@ const handlePayment=(e)=>{
                               </button>
                             </div>
                           </div>
-                          
                         </div>
                       </li>
                     ))}
@@ -414,7 +432,12 @@ const handlePayment=(e)=>{
                   <p>$ {totalAmount}</p>
                 </div>
                 <div className="mt-6">
-                
+                  <div
+                    onClick={handleOrders}
+                    className="flex cursor-pointer items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                  >
+                    Order Now
+                  </div>
                 </div>
               </div>
             </div>
@@ -422,5 +445,5 @@ const handlePayment=(e)=>{
         </div>
       </div>
     </>
-  )
+  );
 }

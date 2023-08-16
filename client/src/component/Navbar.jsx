@@ -6,9 +6,10 @@ import {
   ShoppingCartIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { selectCart } from "../store/Cart/CartSlice";
+import { selectloggedInUser, signOutUserAsync } from "../store/Auth/authSlice";
 
 const navigation = [
   { name: "Dashboard", href: "#", current: true },
@@ -19,9 +20,23 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+
 const Navbar = () => {
 
   const cart=useSelector(selectCart)
+  const user=useSelector(selectloggedInUser)
+  const dispatch=useDispatch()
+  const navigate=useNavigate();
+
+  const handleClick=()=>{
+    if(user){
+      dispatch(signOutUserAsync(user.id))
+      navigate('/login')
+    }else{
+
+    }
+  }
+  
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -40,7 +55,7 @@ const Navbar = () => {
                 </Disclosure.Button>
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 items-center">
+                <Link to='/' className="flex flex-shrink-0 items-center">
                   <img
                     className="block h-8 w-auto lg:hidden"
                     src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
@@ -51,7 +66,7 @@ const Navbar = () => {
                     src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
                     alt="Your Company"
                   />
-                </div>
+                </Link>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
@@ -81,9 +96,9 @@ const Navbar = () => {
                     <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
                 </Link>
-                <span className="inline-flex items-center rounded-md bg-red-50  px-2 py-1 mb-7 -ml-3 text-xs font-medium text-green-700 ring-1   ring-inset ring-green-600/20">
+               {cart.length>0? (<span className="inline-flex items-center rounded-md bg-red-50  px-2 py-1 mb-7 -ml-3 text-xs font-medium text-green-700 ring-1   ring-inset ring-green-600/20">
                   {cart.length}
-                </span>
+                </span>):null} 
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
@@ -122,21 +137,23 @@ const Navbar = () => {
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
+                          <Link
+                            to='/order'
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"
                             )}
                           >
-                            Settings
-                          </a>
+                            Your Orders
+                          </Link>
                         )}
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <Link
-                            to='/login'
+                         
+                           <Link
+                           to='/login'
+                            onClick={handleClick}
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"

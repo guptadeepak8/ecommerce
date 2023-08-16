@@ -43,3 +43,10 @@ export function updateUser(userData) {
     resolve({ data });
   });
 }
+
+export function signOutUser(userId) {
+  return new Promise(async (resolve) => {
+   
+    resolve({ data:'success' });
+  });
+}

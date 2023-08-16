@@ -1,7 +1,7 @@
   import React from "react";
   import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { checkUserAsync, selectError, selectloggedInUser } from "../store/Auth/authSlice";
 
   const Login = () => {
@@ -16,7 +16,6 @@ import { checkUserAsync, selectError, selectloggedInUser } from "../store/Auth/a
 const dispatch=useDispatch();
 const user=useSelector(selectloggedInUser)
 const error=useSelector(selectError)
-
     return (
     <>
     {user && <Navigate to='/' replace={true}/>}
