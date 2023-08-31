@@ -1,6 +1,7 @@
 export function createUser(userData) {
+  console.log(userData);
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:3000/users", {
+    const response = await fetch("http://localhost:3000/auth/signup", {
       method: "POST",
       body: JSON.stringify(userData),
       headers: { "content-type": "application/json" },
@@ -10,39 +11,28 @@ export function createUser(userData) {
   });
 }
 export function checkUser(logInfo) {
-
   return new Promise(async (resolve,reject) => {
-    const email=logInfo.email
-    const password=logInfo.password
-    const response = await fetch("http://localhost:3000/users?email="+email);
-    if(response){
-    
-      const data = await response.json();
-      if(data.length){
-        if(password===data[0].password){
-          resolve({ data:data[0] });
-        }else{
-          reject({message:'wrong password'})
-        }
-      }else{
-        reject({message:'user not found'})
-      }
-    }
-    
-  });
-}
-
-export function updateUser(userData) {
-  return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:3000/users/"+userData.id, {
-      method: "PATCH",
-      body: JSON.stringify(userData),
+try {
+  const response = await fetch("http://localhost:3000/auth/login", {
+      method: "POST",
+      body: JSON.stringify(logInfo),
       headers: { "content-type": "application/json" },
     });
-    const data = await response.json();
-    resolve({ data });
+      if(response.ok){
+        const data = await response.json();
+      resolve({data});
+      }else{
+        const error = await response.json();
+      reject(error)
+      }
+      
+} catch (error) {
+  reject(error)
+}
   });
 }
+
+
 
 export function signOutUser(userId) {
   return new Promise(async (resolve) => {

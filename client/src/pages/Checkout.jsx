@@ -6,23 +6,16 @@ import {
   updateCartAsync,
 } from "../store/Cart/CartSlice";
 import { useForm } from "react-hook-form";
-import { selectloggedInUser, updateUserAsync } from "../store/Auth/authSlice";
+import { selectloggedInUser } from "../store/Auth/authSlice";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { createOrderAsync, selectCurrentOrder } from "../store/order/orderSlice";
+import { selectUserInfo, updateUserAsync } from "../store/User/userSlice";
 
-const addresses = [
-  {
-    name: "ksksk",
-    street: "ddddd",
-    pinCode: 2222,
-    phone: +917377333333,
-    city: "mumbai",
-  },
-];
+
 export default function Checkout() {
   const [selectedAddress, setselectedAddress] = useState(null);
-  const [selectedPayMethod, setSelectedPayMethod] = useState("cash");
+  const [selectedPayMethod , setselectedPayMethod] = useState("cash");
 
   const {
     register,
@@ -31,15 +24,17 @@ export default function Checkout() {
     reset,
     formState: { errors },
   } = useForm();
-  const user = useSelector(selectloggedInUser);
+
+  const user = useSelector(selectUserInfo);
   const products = useSelector(selectCart);
   const currentOrder=useSelector(selectCurrentOrder)
   const navigate=useNavigate();
   const dispatch = useDispatch();
 
+
   const totalAmount = products.reduce(
     (amount, item) =>
-      Math.round(item.price * (1 - item.discountPercentage / 100)) * item.qty +
+      Math.round(item.product.price * (1 - item.product.discountPercentage / 100)) * item.qty +
       amount,
     0
   );
@@ -49,16 +44,17 @@ export default function Checkout() {
   };
 
   const handleAddress = (e) => {
-    setselectedAddress(user.address[e.target.value]);
+   
+    setselectedAddress(user.addresses[e.target.value]);
   };
 
   const handlePayment = (e) => {
-    setSelectedPayMethod(e.target.value);
+    setselectedPayMethod(e.target.value);
   };
 
   const handleOrders=()=>{
     if(selectedAddress && selectedPayMethod){
-      let order={products,totalAmount,user,selectedAddress,selectedPayMethod,status:'pending'}
+      let order={item:products,totalAmount,user:user.id,selectedAddress,paymentMethod:selectedPayMethod,status:'pending'}
       dispatch(createOrderAsync(order))
     }
   }
@@ -76,7 +72,7 @@ export default function Checkout() {
               noValidate
               onSubmit={handleSubmit((data) => {
                 dispatch(
-                  updateUserAsync({ ...user, address: [...user.address, data] })
+                  updateUserAsync({ ...user, addresses: [...user.addresses, data] })
                 );
                 reset();
               })}
@@ -278,7 +274,7 @@ export default function Checkout() {
                 Choose from Existing addresses
               </p>
               <ul>
-                {user.address.map((address, index) => (
+                {user.addresses.map((address, index) => (
                   <li
                     key={index}
                     className="flex justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200"
@@ -375,8 +371,8 @@ export default function Checkout() {
                       <li key={item.id} className="flex py-6">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                           <img
-                            src={item.thumbnail}
-                            alt={item.title}
+                            src={item.product.thumbnail}
+                            alt={item.product.title}
                             className="h-full w-full object-cover object-center"
                           />
                         </div>
@@ -385,18 +381,18 @@ export default function Checkout() {
                           <div>
                             <div className="flex justify-between text-base font-medium text-gray-900">
                               <h3>
-                                <a href={item.id}>{item.title}</a>
+                                <a href={item.product.id}>{item.product.title}</a>
                               </h3>
                               <p className="ml-4">
                                 $
                                 {Math.round(
-                                  item.price *
-                                    (1 - item.discountPercentage / 100)
+                                  item.product.price *
+                                    (1 - item.product.discountPercentage / 100)
                                 )}
                               </p>
                             </div>
                             <p className="mt-1 text-sm text-gray-500">
-                              {item.brand}
+                              {item.product.productbrand}
                             </p>
                           </div>
                           <div className="flex flex-1 items-end justify-between text-sm">
@@ -411,7 +407,7 @@ export default function Checkout() {
 
                             <div className="flex">
                               <button
-                                onClick={() => handleRemove(item.id)}
+                                onClick={() => handleRemove(item.product.id)}
                                 type="button"
                                 className="font-medium text-indigo-600 hover:text-indigo-500"
                               >

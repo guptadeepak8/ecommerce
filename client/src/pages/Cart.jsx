@@ -12,11 +12,10 @@ import { deleteCartAsync, selectCart } from "../store/Cart/CartSlice";
 const Cart = () => {
   const [open, setOpen] = useState(true);
   const user=useSelector(selectloggedInUser)
-  const products=useSelector(selectCart)
+  const items=useSelector(selectCart)
   const dispatch=useDispatch();
  
-  
-  const totalAmount=products.reduce((amount,item)=>item.price*item.qty+amount,0)
+  const totalAmount=items.reduce((amount,item)=>item.product.price*item.qty+amount,0)
 
   const handleRemove=(itemId)=>{
     dispatch(deleteCartAsync(itemId))
@@ -28,18 +27,18 @@ const Cart = () => {
     <div className="mx-auto mt-10 max-w-5xl px-2 sm:px-6 lg:px-8">
       <span className="text-3xl ">Your Cart</span>
       <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-        {products.length===0 ?(
-          <h3>no products</h3>
+        {items.length===0 ?(
+          <h3>no items</h3>
         ):
         (
           <div className="flow-root">
           <ul role="list" className="-my-6 divide-y divide-gray-200">
-            {products.map((product) => (
-              <li key={product.id} className="flex py-6">
+            {items.map((item) => (
+              <li key={item.id} className="flex py-6">
                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                   <img
-                    src={product.thumbnail}
-                    alt={product.imageAlt}
+                    src={item.product.thumbnail}
+                    alt={item.product.imageAlt}
                     className="h-full w-full object-cover object-center"
                   />
                 </div>
@@ -48,9 +47,9 @@ const Cart = () => {
                   <div>
                     <div className="flex justify-between text-base font-medium text-gray-900">
                       <h3>
-                        <a href={product.href}>{product.name}</a>
+                        <a href={item.product.href}>{item.product.name}</a>
                       </h3>
-                      <p className="ml-4">${product.price}</p>
+                      <p className="ml-4">${item.product.price}</p>
                     </div>
                   </div>
                   <div className="flex flex-1 items-end justify-between text-sm">
@@ -69,7 +68,7 @@ const Cart = () => {
 
                     <div className="flex">
                       <button
-                      onClick={()=>handleRemove(product.id)}
+                      onClick={()=>handleRemove(item.id)}
                         type="button"
                         className="font-medium text-indigo-600 hover:text-indigo-500"
                       >

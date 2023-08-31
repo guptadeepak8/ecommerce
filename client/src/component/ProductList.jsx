@@ -217,9 +217,9 @@ export default function ProductList() {
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-5">
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-              All Products
+              Products
             </h1>
-            <button className="bg-grey" onClick={resetFilter}>remove filter</button>
+            
 
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
@@ -242,7 +242,7 @@ export default function ProductList() {
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl  ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
                       {sortOptions.map((option) => (
                         <Menu.Item key={option.name}>
@@ -361,9 +361,9 @@ export default function ProductList() {
                 <div className="bg-white">
                   <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
                     <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                      {products.map((product) => (
-                        <Link to={ `/productDetails/${product.id}`} key={product.id} >
-                          <div key={product.id} className="group relative">
+                      {products?.map((product) => (
+                        <Link to={ `/products/${product.id}`} key={product.id} >
+                          <div key={product._id} className="group relative">
                             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
                               <img
                                 src={product.thumbnail}

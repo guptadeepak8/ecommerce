@@ -12,8 +12,13 @@ const initialState = {
 export const fetchAllProductsAsync = createAsyncThunk(
   "product/fetchAllProducts",
   async () => {
-    const res = await fetchAllProducts();
+    try {
+      const res = await fetchAllProducts();
     return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+    
   }
 );
 export const fetchProductsByFilterAsync = createAsyncThunk(

@@ -7,7 +7,7 @@ import Cart from "./pages/Cart.jsx";
 import ProductList from "./component/ProductList.jsx";
 import Checkout from "./pages/Checkout.jsx";
 import Protected from "./utils/Protected.jsx";
-import ProductDetails from "./pages/productDetails.jsx";
+
 import CheckUser from "./utils/CheckUser.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { selectloggedInUser } from "./store/Auth/authSlice.js";
@@ -16,6 +16,8 @@ import { useEffect } from "react";
 import PageNotFound from "./pages/PageNotFound.jsx";
 import OrderSuccess from "./pages/OrderSuccess.jsx";
 import Orders from "./pages/Orders.jsx";
+import ProductDetails from "./pages/ProductDetails.jsx";
+import { fetchLoggedInUserAsync } from "./store/User/userSlice.js";
 
 
 
@@ -31,14 +33,14 @@ const router = createBrowserRouter([
       },
       {
         path: "/order",
-        element: <Orders/>,
+        element: <Protected><Orders/></Protected>,
       },
       {
         path: "/checkout",
         element: <Protected><Checkout /></Protected>,
       },
       {
-        path: "/productDetails/:id",
+        path: "/products/:id",
         element: <ProductDetails/>,
       },
       {
@@ -73,6 +75,7 @@ const user=useSelector(selectloggedInUser)
 useEffect(() => {
  if(user){
   dispatch(fetchItemsByIdAsync(user.id))
+  dispatch(fetchLoggedInUserAsync(user.id));
  }
 }, [dispatch,user])
 

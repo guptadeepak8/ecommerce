@@ -1,21 +1,39 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { fetchAllOrders } from './userApi';
+import { fetchAllOrders, fetchLoggedInUser, updateUser } from './userApi';
 
 const initialState = {
-  userOrders:[],
+  userInfo:null,
   status:'idle'
 }
 
 export const fetchLoggedInUserOrdersAsync = createAsyncThunk(
-  "userOrder/fetchLoggedInUserOrders",
+  "user/fetchLoggedInUserOrders",
   async (userId) => {
       const res = await fetchAllOrders(userId);
+      console.log(res);
+      return res.data;
+  }
+);
+
+export const fetchLoggedInUserAsync = createAsyncThunk(
+  'user/fetchLoggedInUser',
+  async (userId) => {
+    const response = await fetchLoggedInUser(userId);
+   
+    return response.data;
+  }
+);
+
+export const updateUserAsync = createAsyncThunk(
+  "user/updateUser",
+  async (userData) => {
+      const res = await updateUser(userData);
       return res.data;
   }
 );
 
 export const userSlice = createSlice({
-  name: 'userOrder',
+  name: 'user',
   initialState,
   reducers: {
   },
@@ -26,9 +44,29 @@ export const userSlice = createSlice({
       })
       .addCase(fetchLoggedInUserOrdersAsync.fulfilled, (state, action) => {
         state.status = "success";
-        state.userOrders=action.payload
+        state.userInfo.orders=action.payload
       })
       .addCase(fetchLoggedInUserOrdersAsync.rejected, (state) => {
+        state.status = 'failed';
+      })
+      .addCase(updateUserAsync.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(updateUserAsync.fulfilled, (state, action) => {
+        state.status = "success";
+        state.userInfo = action.payload ;
+      })
+      .addCase(updateUserAsync.rejected, (state,action) => {
+        state.status = 'failed';
+      })
+      .addCase(fetchLoggedInUserAsync.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(fetchLoggedInUserAsync.fulfilled, (state, action) => {
+        state.status = "success";
+        state.userInfo = action.payload ;
+      })
+      .addCase(fetchLoggedInUserAsync.rejected, (state,action) => {
         state.status = 'failed';
       })
     }
@@ -36,7 +74,7 @@ export const userSlice = createSlice({
 
 
 
- export const selectUserOrders=(state)=>state.user.userOrders
-
+ export const selectUserOrders=(state)=>state.user.userInfo.orders;
+ export const selectUserInfo = (state) => state.user.userInfo;
 
 export default userSlice.reducer

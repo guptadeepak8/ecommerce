@@ -36,8 +36,7 @@ export default function ProductDetails() {
  
   const handleClick=()=>{
     if(user){
-      const newItem={...product,qty:1,user:user.id};
-      delete newItem['id']
+      const newItem={product:product.id,qty:1,user:user.id}; 
       dispatch(fetchCartAsync(newItem))
     }
     else{
@@ -48,7 +47,6 @@ export default function ProductDetails() {
   if (!product) {
     return <div>Loading...</div>; // or show a loading state
   }
-
 
   return (
     <div className="bg-white">

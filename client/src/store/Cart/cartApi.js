@@ -20,7 +20,7 @@ export function fetchItemsById(userId) {
 }
 export function updateCart(item) {
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:3000/cart"+item.id, {
+    const response = await fetch("http://localhost:3000/cart/"+item.id, {
       method: "PATCH",
       body: JSON.stringify(item),
       headers: { "content-type": "application/json" },
@@ -29,6 +29,7 @@ export function updateCart(item) {
     resolve({ data });
   });
 }
+
 export function deleteItems(itemId) {
   return new Promise(async (resolve) => {
     const response = await fetch("http://localhost:3000/cart/"+itemId, {
