@@ -4,14 +4,12 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Link, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { selectloggedInUser } from "../store/Auth/authSlice";
 import { deleteCartAsync, selectCart } from "../store/Cart/CartSlice";
 
 
 
 const Cart = () => {
   const [open, setOpen] = useState(true);
-  const user=useSelector(selectloggedInUser)
   const items=useSelector(selectCart)
   const dispatch=useDispatch();
  

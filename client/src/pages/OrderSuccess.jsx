@@ -12,7 +12,7 @@ const OrderSuccess = () => {
 
 
   useEffect(() => {
-   dispatch(resetCartAsync(user.id))
+   dispatch(resetCartAsync())
    dispatch(resetOrder())
   }, [dispatch,user.id])
   

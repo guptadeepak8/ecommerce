@@ -1,5 +1,4 @@
 export function createUser(userData) {
-  console.log(userData);
   return new Promise(async (resolve) => {
     const response = await fetch("http://localhost:3000/auth/signup", {
       method: "POST",
@@ -10,7 +9,7 @@ export function createUser(userData) {
     resolve({ data });
   });
 }
-export function checkUser(logInfo) {
+export function loginUser(logInfo) {
   return new Promise(async (resolve,reject) => {
 try {
   const response = await fetch("http://localhost:3000/auth/login", {
@@ -31,12 +30,39 @@ try {
 }
   });
 }
+export function checkUser() {
+  return new Promise(async (resolve,reject) => {
+try {
+  const response = await fetch("http://localhost:3000/auth/check");
+      if(response.ok){
+        const data = await response.json();
+      resolve({data});
+      }else{
+        const error = await response.json();
+      reject(error)
+      }
+      
+} catch (error) {
+  reject(error)
+}
+  });
+}
 
 
 
-export function signOutUser(userId) {
-  return new Promise(async (resolve) => {
-   
-    resolve({ data:'success' });
+export function signOutUser() {
+  return new Promise(async (resolve,reject) => {
+    try {
+      const response = await fetch('http://localhost:3000/auth/logout');
+      if (response.ok) {
+        resolve({ data:'success' });
+      } else {
+        const error = await response.text();
+        reject(error);
+      }
+    } catch (error) {
+      console.log(error)
+      reject( error );
+    }
   });
 }

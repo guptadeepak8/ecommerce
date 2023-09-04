@@ -1,10 +1,13 @@
 const express =require('express');
-const { createUser,loginUser } = require('../controller/authController');
-
+const { createUser,loginUser, checkUser, logout } = require('../controller/authController');
+const passport = require('passport');
 
 const router=express.Router();
 
-router.post('/signup',createUser).post('/login',loginUser)
+router.post('/signup',createUser)
+.post('/login',passport.authenticate('local'),loginUser)
+.get('/check',passport.authenticate('jwt'),checkUser)
+.get('/logout', logout)
       
 
 exports.router=router

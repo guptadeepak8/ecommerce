@@ -10,14 +10,19 @@ export function fetchAllProducts() {
 
 
 //Api for filtering products 
-export function fetchProductsByFilters(filter) {
+export function fetchProductsByFilters(filter,sort) {
   let queryString=''
 
 
-  for(let key in filter){
-    queryString += `${key}=${filter[key]}&`
+  for (let key in filter) {
+    const categoryValues = filter[key];
+    if (categoryValues.length) {
+      queryString += `${key}=${categoryValues}&`;
+    }
   }
-
+  for (let key in sort) {
+    queryString += `${key}=${sort[key]}&`;
+  }
 
   return new Promise(async (resolve) =>{
     const response = await fetch('http://localhost:3000/products?'+queryString) 

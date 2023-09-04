@@ -2,8 +2,8 @@
   import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { checkUserAsync, selectError, selectloggedInUser } from "../store/Auth/authSlice";
-
+import { loginUserAsync, selectError, selectloggedInUser } from "../store/Auth/authSlice";
+import Cookies from "js-cookie";
   const Login = () => {
     const {
   register,
@@ -36,7 +36,7 @@ const error=useSelector(selectError)
             noValidate
             className="space-y-6"
             onSubmit={handleSubmit((data) =>
-                 dispatch(checkUserAsync(data))
+                 dispatch(loginUserAsync(data))
               )}
           >
             <div>

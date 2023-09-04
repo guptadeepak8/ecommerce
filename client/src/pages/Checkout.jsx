@@ -1,4 +1,3 @@
-import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteCartAsync,
@@ -6,7 +5,6 @@ import {
   updateCartAsync,
 } from "../store/Cart/CartSlice";
 import { useForm } from "react-hook-form";
-import { selectloggedInUser } from "../store/Auth/authSlice";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { createOrderAsync, selectCurrentOrder } from "../store/order/orderSlice";
@@ -25,7 +23,7 @@ export default function Checkout() {
     formState: { errors },
   } = useForm();
 
-  const user = useSelector(selectUserInfo);
+  const userInfo = useSelector(selectUserInfo);
   const products = useSelector(selectCart);
   const currentOrder=useSelector(selectCurrentOrder)
   const navigate=useNavigate();
@@ -45,7 +43,7 @@ export default function Checkout() {
 
   const handleAddress = (e) => {
    
-    setselectedAddress(user.addresses[e.target.value]);
+    setselectedAddress(userInfo.addresses[e.target.value]);
   };
 
   const handlePayment = (e) => {
@@ -54,7 +52,7 @@ export default function Checkout() {
 
   const handleOrders=()=>{
     if(selectedAddress && selectedPayMethod){
-      let order={item:products,totalAmount,user:user.id,selectedAddress,paymentMethod:selectedPayMethod,status:'pending'}
+      let order={item:products,totalAmount,user:userInfo.id,selectedAddress,paymentMethod:selectedPayMethod,status:'pending'}
       dispatch(createOrderAsync(order))
     }
   }
@@ -72,7 +70,7 @@ export default function Checkout() {
               noValidate
               onSubmit={handleSubmit((data) => {
                 dispatch(
-                  updateUserAsync({ ...user, addresses: [...user.addresses, data] })
+                  updateUserAsync({ ...userInfo, addresses: [...userInfo.addresses, data] })
                 );
                 reset();
               })}
@@ -274,7 +272,7 @@ export default function Checkout() {
                 Choose from Existing addresses
               </p>
               <ul>
-                {user.addresses.map((address, index) => (
+                {userInfo.addresses.map((address, index) => (
                   <li
                     key={index}
                     className="flex justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200"

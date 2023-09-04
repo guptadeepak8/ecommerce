@@ -29,6 +29,7 @@ export default function ProductList() {
   const dispatch = useDispatch();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filter,setFilter]=useState({})
+  const [sort, setSort] = useState({});
    const products =useSelector(selectAllProducts)
    const categories=useSelector(selectCategories)
    const brands=useSelector(selectBrands)
@@ -78,16 +79,13 @@ export default function ProductList() {
 
    //for sorting by rate and reviews
    const handleSort=(option)=>{
-
-    const newFilter={...filter,_sort:option.sort,_order:option.order}
-    setFilter(newFilter)
-    dispatch(fetchProductsByFilterAsync(newFilter))
-    
+    const sort ={ _sort: option.sort, _order: option.order}
+    setSort(sort)  
    }
 
     useEffect(() => {
-      dispatch(fetchProductsByFilterAsync(filter))
-    }, [dispatch,filter]);
+      dispatch(fetchProductsByFilterAsync({ filter, sort}))
+    }, [dispatch,filter,sort]);
   
 
   

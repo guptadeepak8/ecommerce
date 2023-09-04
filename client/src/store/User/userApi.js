@@ -1,16 +1,16 @@
 //Api for fetching user
-export function fetchAllOrders(userId) {
+export function fetchAllOrders() {
   return new Promise(async (resolve) =>{
-    const response = await fetch('http://localhost:3000/orders?user='+userId) 
+    const response = await fetch('http://localhost:3000/orders') 
     const data = await response.json()
     resolve({data})
   }
   );
 }
 
-export function fetchLoggedInUser(userId) {
+export function fetchLoggedInUser() {
   return new Promise(async (resolve) =>{
-    const response = await fetch('http://localhost:3000/users/'+userId) 
+    const response = await fetch('http://localhost:3000/users/own') 
     const data = await response.json()
     resolve({data})
   }

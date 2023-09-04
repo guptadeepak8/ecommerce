@@ -28,15 +28,7 @@ const Navbar = () => {
   const dispatch=useDispatch()
   const navigate=useNavigate();
 
-  const handleClick=()=>{
-    if(user){
-      dispatch(signOutUserAsync(user.id))
-      navigate('/login')
-    }else{
 
-    }
-  }
-  
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -152,8 +144,8 @@ const Navbar = () => {
                         {({ active }) => (
                          
                            <Link
-                           to='/login'
-                            onClick={handleClick}
+                           to='/logout'
+                            
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"

@@ -3,11 +3,12 @@ const {Schema}=mongoose
 
 const userSchema =new Schema({
   email:{type:String ,required:true,unique:true},
-  password:{type:String ,required:true},
+  password:{type:Buffer ,required:true},
   addresses:{type:[Schema.Types.Mixed]},
   role:{type:String,required:true,default:'user'},
   name:{type:String},
-  orders:{type:[Schema.Types.Mixed]}
+  orders:{type:[Schema.Types.Mixed]},
+  salt:Buffer
 })
 
 const virtual=userSchema.virtual('id')
