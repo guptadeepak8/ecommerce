@@ -12,7 +12,7 @@ export function addCart(items) {
 
 export function fetchItemsById() {
   return new Promise(async (resolve) =>{
-    const response = await fetch('http://localhost:3000/cart')
+    const response = await fetch('/cart')
     const data = await response.json()
     resolve({data})
   }

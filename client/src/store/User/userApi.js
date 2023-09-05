@@ -1,7 +1,7 @@
 //Api for fetching user
 export function fetchAllOrders() {
   return new Promise(async (resolve) =>{
-    const response = await fetch('http://localhost:3000/orders') 
+    const response = await fetch('/orders') 
     const data = await response.json()
     resolve({data})
   }
@@ -10,7 +10,7 @@ export function fetchAllOrders() {
 
 export function fetchLoggedInUser() {
   return new Promise(async (resolve) =>{
-    const response = await fetch('http://localhost:3000/users/own') 
+    const response = await fetch('/users/own') 
     const data = await response.json()
     resolve({data})
   }
