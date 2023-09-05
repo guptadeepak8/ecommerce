@@ -1,7 +1,7 @@
 const express=require('express')
 require('dotenv').config();
 const cors =require('cors')
-const PORT =process.env.PORT ;
+const PORT =process.env.PORT || 3000 ;
 const url=process.env.MONGODB_URL
 const mongoose=require('mongoose');
 
@@ -115,5 +115,5 @@ app.use('/orders',isAuth(),orderRouter.router)
 
 
 app.listen(PORT,()=>{
-  console.log(`api is running on port http://localhost:${PORT}`);
+  console.log(`api is running on port `);
 })
