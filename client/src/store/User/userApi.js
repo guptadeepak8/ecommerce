@@ -19,7 +19,7 @@ export function fetchLoggedInUser() {
 export function updateUser(userData) {
   return new Promise(async (resolve,reject) => {
     try {
-      const response = await fetch(import.meta.env.VITE_REACT_APP_API_URL+"/users/"+userData.id, {
+      const response = await fetch("/users/"+userData.id, {
       method: "PATCH",
       body: JSON.stringify(userData),
       headers: { "content-type": "application/json" },

@@ -22,7 +22,8 @@ const { User } = require('./model/userModel');
 const LocalStrategy=require('passport-local').Strategy
 const crypto=require('crypto');
 const { isAuth, cookieExtractor } = require('./service/common');
-
+const { request } = require('http');
+const path=require('path')
 const app = express();
 
 
@@ -41,7 +42,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 app.use(cookieParser())
-app.use(express.static('dist'));
+app.use(express.static(path.resolve(__dirname, 'dist')));
 
 //passport stratiegies
 passport.use('local',new LocalStrategy(

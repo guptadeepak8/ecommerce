@@ -1,6 +1,6 @@
 export function addCart(items) {
   return new Promise(async (resolve) => {
-    const response = await fetch(import.meta.env.VITE_REACT_APP_API_URL+"/cart", {
+    const response = await fetch("/cart", {
       method: "POST",
       body: JSON.stringify(items),
       headers: { "content-type": "application/json" },
@@ -20,7 +20,7 @@ export function fetchItemsById() {
 }
 export function updateCart(item) {
   return new Promise(async (resolve) => {
-    const response = await fetch(import.meta.env.VITE_REACT_APP_API_URL+"/cart/"+item.id, {
+    const response = await fetch("/cart/"+item.id, {
       method: "PATCH",
       body: JSON.stringify(item),
       headers: { "content-type": "application/json" },
@@ -32,7 +32,7 @@ export function updateCart(item) {
 
 export function deleteItems(itemId) {
   return new Promise(async (resolve) => {
-    const response = await fetch(import.meta.env.VITE_REACT_APP_API_URL+"/cart/"+itemId, {
+    const response = await fetch("/cart/"+itemId, {
       method: "DELETE",
       headers: { "content-type": "application/json" },
     });

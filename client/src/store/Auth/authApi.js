@@ -1,6 +1,6 @@
 export function createUser(userData) {
   return new Promise(async (resolve) => {
-    const response = await fetch(import.meta.env.VITE_REACT_APP_API_URL+"/auth/signup", {
+    const response = await fetch("/auth/signup", {
       method: "POST",
       body: JSON.stringify(userData),
       headers: { "content-type": "application/json" },
@@ -12,7 +12,7 @@ export function createUser(userData) {
 export function loginUser(logInfo) {
   return new Promise(async (resolve,reject) => {
 try {
-  const response = await fetch(import.meta.env.VITE_REACT_APP_API_URL+"/auth/login", {
+  const response = await fetch("/auth/login", {
       method: "POST",
       body: JSON.stringify(logInfo),
       headers: { "content-type": "application/json" },
@@ -33,7 +33,7 @@ try {
 export function checkUser() {
   return new Promise(async (resolve,reject) => {
 try {
-  const response = await fetch(import.meta.env.VITE_REACT_APP_API_URL+"/auth/check");
+  const response = await fetch("/auth/check");
       if(response.ok){
         const data = await response.json();
       resolve({data});
