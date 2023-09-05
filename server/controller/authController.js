@@ -2,6 +2,7 @@ const { User } = require("../model/userModel");
 const crypto=require('crypto')
 const jwt = require('jsonwebtoken');
 const SECRET_KEY=process.env.SECRET_KEY
+
 exports.createUser = async (req, res) => {
 
   try {

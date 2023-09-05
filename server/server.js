@@ -18,12 +18,11 @@ const passport = require('passport');
 const cookieParser=require('cookie-parser')
 const jwt = require('jsonwebtoken');
 const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
 const { User } = require('./model/userModel');
 const LocalStrategy=require('passport-local').Strategy
 const crypto=require('crypto');
 const { isAuth, cookieExtractor } = require('./service/common');
-const path = require('path');
+
 const app = express();
 
 
@@ -32,6 +31,8 @@ const opts = {}
 opts.jwtFromRequest = cookieExtractor
 opts.secretOrKey = SECRET_KEY;
 
+app.use(cors()); 
+app.use(express.json())
 app.use(session({
   secret: process.env.SESSION_KEY,
   resave: false, // don't save session if unmodified
@@ -41,17 +42,6 @@ app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 app.use(cookieParser())
 app.use(express.static('dist'));
-
-app.use(cors());
-app.use(express.json())
-app.use('/products',productRoute.router)
-app.use('/categories',categoryRouter.router)
-app.use('/brands',brandRouter.router)
-app.use('/users',isAuth(),userRouter.router)
-app.use('/auth',authRouter.router)
-app.use('/cart',isAuth(),cartRouter.router)
-app.use('/orders',isAuth(),orderRouter.router)
-
 
 //passport stratiegies
 passport.use('local',new LocalStrategy(
@@ -67,8 +57,9 @@ passport.use('local',new LocalStrategy(
         if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
            return done(null,false,{ message: "password is wrong" });
         } 
-        const token = jwt.sign({id:user.id  }, SECRET_KEY);
-        done(null,{id:user.id}) 
+        const token = jwt.sign({id:user.id}, SECRET_KEY);
+        user.token = token;
+        done(null,user) 
       })
       
     } catch (error) {
@@ -82,10 +73,9 @@ passport.use('jwt',new JwtStrategy(opts, async function(jwt_payload, done) {
   try {
     const user= await User.findById(jwt_payload.id);
     if (user) {
-      return done(null, {id:user.id});
+      return done(null, user);
   } else {
       return done(null, false);
-      // or you could create a new account
   }
   } catch (error) {
     return done(error, false);
@@ -112,6 +102,16 @@ async function main(){
   await mongoose.connect(url);
   console.log("monggose connected succesfully");
 }
+
+
+app.use('/products',productRoute.router)
+app.use('/categories',categoryRouter.router)
+app.use('/brands',brandRouter.router)
+app.use('/users',isAuth(),userRouter.router)
+app.use('/auth',authRouter.router)
+app.use('/cart',isAuth(),cartRouter.router)
+app.use('/orders',isAuth(),orderRouter.router)
+
 
 app.listen(PORT,()=>{
   console.log(`api is running on port http://localhost:${PORT}`);

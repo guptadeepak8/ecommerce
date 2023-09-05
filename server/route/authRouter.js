@@ -11,3 +11,4 @@ router.post('/signup',createUser)
       
 
 exports.router=router
+ // token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZjVlNWFhNDk3ZWM5ZjZiYjhiZmYzOCIsImlhdCI6MTY5MzgzNjcxNX0.PJpcjmlkqcDvq1UbE5H7QHlUrzX3KPJKhmdE3JdIWhk"
