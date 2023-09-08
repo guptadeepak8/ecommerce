@@ -41,7 +41,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 app.use(cookieParser())
-// app.use(express.static(path.resolve(__dirname, 'dist')));
+app.use(express.static(path.resolve(__dirname, 'dist')));
 
 //passport stratiegies
 passport.use('jwt',new JwtStrategy(opts, async function(jwt_payload, done) {
