@@ -18,7 +18,7 @@ exports.createOrder=async(req,res)=>{
     const doc =await order.save();
     res.status(201).json(doc)
   } catch (error) {
-    res.status(400).json(error);
+    res.status(400).json({message:error});
   }
 }
 

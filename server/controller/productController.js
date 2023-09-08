@@ -6,7 +6,7 @@
       const docs=await product.save();
       req.status(201).json(docs)
     } catch (error) {
-      res.status(400).json(error)
+      res.status(400).json({message:error})
     }
   }
 
@@ -17,7 +17,7 @@ exports.fetchProducts=async(req,res)=>{
   let condition = {}
 
   let query = Product.find(condition);
-
+  let totalProductsQuery = Product.find(condition);
   if (req.query.category) {
     query = query.find({ category: {$in:req.query.category.split(',')} });
     totalProductsQuery = totalProductsQuery.find({
@@ -35,7 +35,7 @@ exports.fetchProducts=async(req,res)=>{
      const docs = await query.exec();
     res.status(200).json(docs);
   } catch (error) {
-    res.status(400).json(error)
+    res.status(400).json({message:error})
   }
  
 }
@@ -46,7 +46,7 @@ exports.fetchProductsById=async(req,res)=>{
     const product=await Product.findById(id)
     res.status(200).json(product)
   } catch (error) {
-    res.status(400).json(error)
+    res.status(400).json({message:error})
   }
  
 }

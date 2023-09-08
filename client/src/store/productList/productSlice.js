@@ -119,5 +119,5 @@ export const selectAllProducts = (state) => state.product.products;
 export const selectCategories = (state) => state.product.category;
 export const selectBrands = (state) => state.product.brands;
 export const selectProductDetails = (state) => state.product.productDetails;
-
+export const selectProductStatus = (state) => state.product.status;
 export default productSlice.reducer;

@@ -7,7 +7,7 @@ import {
 import { useForm } from "react-hook-form";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { createOrderAsync, selectCurrentOrder } from "../store/order/orderSlice";
+import { createOrderAsync, selectCurrentOrder, selectOrderStatus } from "../store/order/orderSlice";
 import { selectUserInfo, updateUserAsync } from "../store/User/userSlice";
 
 
@@ -28,7 +28,7 @@ export default function Checkout() {
   const currentOrder=useSelector(selectCurrentOrder)
   const navigate=useNavigate();
   const dispatch = useDispatch();
-
+  const status=useSelector(selectOrderStatus)
 
   const totalAmount = products.reduce(
     (amount, item) =>
@@ -60,7 +60,7 @@ export default function Checkout() {
   return (
     <>
       {!products.length && <Navigate to="/" replace={true} />}
-      {currentOrder && <Navigate to={`/order-success/${currentOrder.id}`} replace={true} />}
+      {status=="success"?<Navigate to={`/order-success/${currentOrder.id}`} replace={true} />:null}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
           <div className="lg:col-span-3">
@@ -365,7 +365,7 @@ export default function Checkout() {
                 </h1>
                 <div className="flow-root">
                   <ul role="list" className="-my-6 divide-y divide-gray-200">
-                    {products.map((item) => (
+                    {products && products.map((item) => (
                       <li key={item.id} className="flex py-6">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                           <img

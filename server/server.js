@@ -19,7 +19,6 @@ const cookieParser=require('cookie-parser')
 const jwt = require('jsonwebtoken');
 const JwtStrategy = require('passport-jwt').Strategy;
 const { User } = require('./model/userModel');
-const LocalStrategy=require('passport-local').Strategy
 const crypto=require('crypto');
 const { isAuth, cookieExtractor } = require('./service/common');
 const { request } = require('http');
@@ -42,34 +41,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 app.use(cookieParser())
-app.use(express.static(path.resolve(__dirname, 'dist')));
+// app.use(express.static(path.resolve(__dirname, 'dist')));
 
 //passport stratiegies
-passport.use('local',new LocalStrategy(
-  {usernameField:'email'},
-  async function(email, password, done) {
-    try {
-      const user = await User.findOne({ email:email});
-      if (!user) {
-        done(null,false,{message: "no such user email"})
-      }
-      crypto.pbkdf2(password, user.salt, 310000, 32, 'sha256', async function(err, hashedPassword) {
-       
-        if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
-           return done(null,false,{ message: "password is wrong" });
-        } 
-        const token = jwt.sign({id:user.id}, SECRET_KEY);
-        user.token = token;
-        done(null,user) 
-      })
-      
-    } catch (error) {
-      console.log('Error in LocalStrategy:', error);
-      done(error);
-    }
-  }
-));
-
 passport.use('jwt',new JwtStrategy(opts, async function(jwt_payload, done) {
   try {
     const user= await User.findById(jwt_payload.id);

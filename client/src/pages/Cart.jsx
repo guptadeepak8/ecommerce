@@ -1,19 +1,22 @@
 import React from "react";
-import { Fragment, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import {  useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteCartAsync, selectCart } from "../store/Cart/CartSlice";
+import { deleteCartAsync, selectCart, updateCartAsync } from "../store/Cart/CartSlice";
 
 
 
 const Cart = () => {
   const [open, setOpen] = useState(true);
   const items=useSelector(selectCart)
+  const [count,setCount]=useState(0)
   const dispatch=useDispatch();
  
   const totalAmount=items.reduce((amount,item)=>item.product.price*item.qty+amount,0)
+
+  const handleQuantity = (item, quantity) => {
+    dispatch(updateCartAsync({ id: item.id, qty:quantity }));
+  };
 
   const handleRemove=(itemId)=>{
     dispatch(deleteCartAsync(itemId))
@@ -25,13 +28,13 @@ const Cart = () => {
     <div className="mx-auto mt-10 max-w-5xl px-2 sm:px-6 lg:px-8">
       <span className="text-3xl ">Your Cart</span>
       <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-        {items.length===0 ?(
+        {items && items.length===0 ?(
           <h3>no items</h3>
         ):
         (
           <div className="flow-root">
           <ul role="list" className="-my-6 divide-y divide-gray-200">
-            {items.map((item) => (
+            {items && items.map((item) => (
               <li key={item.id} className="flex py-6">
                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                   <img
@@ -54,24 +57,41 @@ const Cart = () => {
                     <div className="text-gray-500">
                       <label
                         htmlFor="quantity"
-                        className="inline mr-5 text-sm font-medium leading-6 text-gray-900"
+                        className="inline mr-5 mb-10 text-xl font-medium leading-6 text-gray-900"
                       >
                         Qty
                       </label>
-                      <select name="" id="">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                      </select>
+                      <div className="flex">
+                  <button
+                    onClick={()=>{
+                      if (item.qty > 1) {
+                      handleQuantity(item, item.qty - 1); // Update the cart quantity
+                    }}}
+                    type="button"
+                    className=" text-3xl text-indigo-600 hover:text-indigo-500 "
+                  >
+                    -
+                  </button>
+                  <span className="mx-2 text-3xl">{item.qty}</span>
+                  <button
+                    onClick={()=>handleQuantity(item, item.qty + 1)}
+                    type="button"
+                    className="font-medium text-3xl text-indigo-600 hover:text-indigo-500"
+                  >
+                    +
+                  </button>
+                  </div>
                     </div>
 
                     <div className="flex">
                       <button
                       onClick={()=>handleRemove(item.id)}
                         type="button"
-                        className="font-medium text-indigo-600 hover:text-indigo-500"
+                        className="font-medium  text-indigo-600 hover:text-indigo-500"
                       >
                         Remove
                       </button>
+                   
                     </div>
                   </div>
                 </div>

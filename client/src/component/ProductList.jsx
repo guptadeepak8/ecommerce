@@ -6,20 +6,27 @@ import {
   FunnelIcon,
   MinusIcon,
   PlusIcon,
-  Squares2X2Icon,StarIcon
+  Squares2X2Icon,
+  StarIcon,
 } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllProductsAsync, fetchBrandsAsync, fetchCategoriesAsync, fetchProductsByFilterAsync, selectAllProducts, selectBrands, selectCategories } from "../store/productList/productSlice";
-
+import {
+  fetchAllProductsAsync,
+  fetchBrandsAsync,
+  fetchCategoriesAsync,
+  fetchProductsByFilterAsync,
+  selectAllProducts,
+  selectBrands,
+  selectCategories,
+  selectProductStatus,
+} from "../store/productList/productSlice";
 
 const sortOptions = [
-  { name: "Best Rating",sort:'rating',order:'desc', current: false },
-  { name: "Price: Low to High",sort:'price',order:'asc', current: false },
-  { name: "Price: High to Low", sort:'price',order:'desc', current: false },
+  { name: "Best Rating", sort: "rating", order: "desc", current: false },
+  { name: "Price: Low to High", sort: "price", order: "asc", current: false },
+  { name: "Price: High to Low", sort: "price", order: "desc", current: false },
 ];
-
-
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -28,19 +35,17 @@ function classNames(...classes) {
 export default function ProductList() {
   const dispatch = useDispatch();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [filter,setFilter]=useState({})
+  const [filter, setFilter] = useState({});
   const [sort, setSort] = useState({});
-   const products =useSelector(selectAllProducts)
-   const categories=useSelector(selectCategories)
-   const brands=useSelector(selectBrands)
-   
-
-
-   const filters = [
+  const products = useSelector(selectAllProducts);
+  const categories = useSelector(selectCategories);
+  const brands = useSelector(selectBrands);
+const status=useSelector(selectProductStatus)
+  const filters = [
     {
       id: "category",
       name: "Category",
-      options:categories,
+      options: categories,
     },
     {
       id: "brand",
@@ -55,47 +60,54 @@ export default function ProductList() {
         { value: "3", label: "3 rating or more", checked: false },
         { value: "2", label: "2 rating or more", checked: false },
         { value: "1", label: "1 rating or more", checked: false },
-      ],  
+      ],
     },
   ];
 
-   const resetFilter=()=>{
-    setFilter({})
-   }
-  
+  const clearFilters = () => {
+    // Reset sorting
+    setSort({});
+
+    // Clear filters
+    setFilter({});
+  };
+
   //for handleling filtering of products
-   const handleFilter=(e,section,option)=>{
-    let newFilter={...filter}
-    if(e.target.checked){
-      newFilter[section.id]=option.value;
-    }
-    else{
-      delete newFilter[section.id]
-    }
-    setFilter(newFilter)
-   
-  ;
-   }
-
-   //for sorting by rate and reviews
-   const handleSort=(option)=>{
-    const sort ={ _sort: option.sort, _order: option.order}
-    setSort(sort)  
-   }
-
-    useEffect(() => {
-      dispatch(fetchProductsByFilterAsync({ filter, sort}))
-    }, [dispatch,filter,sort]);
-  
-
-  
-
-    useEffect(()=>{
-      if(products){
-        dispatch(fetchBrandsAsync())
-        dispatch(fetchCategoriesAsync())
+  const handleFilter = (e, section, option) => {
+    const newFilter = { ...filter };
+    if (e.target.checked) {
+      if (newFilter[section.id]) {
+        newFilter[section.id].push(option.value);
+      } else {
+        newFilter[section.id] = [option.value];
       }
-    },[])
+    } else {
+      const index = newFilter[section.id].findIndex(
+        (el) => el === option.value
+      );
+      newFilter[section.id].splice(index, 1);
+    }
+    console.log({ newFilter });
+
+    setFilter(newFilter);
+  };
+
+  //for sorting by rate and reviews
+  const handleSort = (option) => {
+    const sort = { _sort: option.sort, _order: option.order };
+    setSort(sort);
+  };
+
+  useEffect(() => {
+    dispatch(fetchProductsByFilterAsync({ filter, sort }));
+  }, [dispatch, filter, sort]);
+
+  useEffect(() => {
+    if (products) {
+      dispatch(fetchBrandsAsync());
+      dispatch(fetchCategoriesAsync());
+    }
+  }, []);
   return (
     <div className="bg-white">
       <div>
@@ -188,7 +200,9 @@ export default function ProductList() {
                                       defaultValue={option.value}
                                       type="checkbox"
                                       defaultChecked={option.checked}
-                                      onChange={e=>handleFilter(e,section,option)}
+                                      onChange={(e) =>
+                                        handleFilter(e, section, option)
+                                      }
                                       className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                     />
                                     <label
@@ -217,9 +231,15 @@ export default function ProductList() {
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
               Products
             </h1>
-            
 
             <div className="flex items-center">
+              <button
+                type="button"
+                className="text-gray-500 hover:text-gray-700 mr-4"
+                onClick={clearFilters}
+              >
+                Clear Filters
+              </button>
               <Menu as="div" className="relative inline-block text-left">
                 <div>
                   <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
@@ -246,7 +266,7 @@ export default function ProductList() {
                         <Menu.Item key={option.name}>
                           {({ active }) => (
                             <p
-                              onClick={e=>handleSort(option)}
+                              onClick={(e) => handleSort(option)}
                               className={classNames(
                                 option.current
                                   ? "font-medium text-gray-900"
@@ -265,13 +285,7 @@ export default function ProductList() {
                 </Transition>
               </Menu>
 
-              <button
-                type="button"
-                className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
-              >
-                <span className="sr-only">View grid</span>
-                <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
-              </button>
+            
               <button
                 type="button"
                 className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
@@ -331,11 +345,12 @@ export default function ProductList() {
                                 <input
                                   id={`filter-${section.id}-${optionIdx}`}
                                   name={`${section.id}[]`}
-                                  
                                   value={option.value}
                                   type="checkbox"
                                   defaultChecked={option.checked}
-                                  onChange={(e) => handleFilter(e, section, option)}
+                                  onChange={(e) =>
+                                    handleFilter(e, section, option)
+                                  }
                                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 />
                                 <label
@@ -355,12 +370,12 @@ export default function ProductList() {
               </form>
 
               {/* Product grid  */}
-              <div className="lg:col-span-3">
+             {status=='loading'?<h3>loading...</h3>:(<div className="lg:col-span-3">
                 <div className="bg-white">
                   <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
                     <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                       {products?.map((product) => (
-                        <Link to={ `/products/${product.id}`} key={product.id} >
+                        <Link to={`/products/${product.id}`} key={product.id}>
                           <div key={product._id} className="group relative">
                             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
                               <img
@@ -382,17 +397,22 @@ export default function ProductList() {
                                 </h3>
                                 <p className="mt-1 text-sm text-gray-500">
                                   <StarIcon className="w-6 h-6 inline"></StarIcon>
-                                  <span className="align-bottom">{product.rating}</span>
+                                  <span className="align-bottom">
+                                    {product.rating}
+                                  </span>
                                 </p>
                               </div>
                               <div>
-
-                              <p className="text-sm block font-medium text-gray-900">
-                                ${Math.round(product.price*(1-product.discountPercentage/100))}
-                              </p>
-                              <p className="text-sm block line-through font-medium text-gray-500">
-                                ${product.price}
-                              </p>
+                                <p className="text-sm block font-medium text-gray-900">
+                                  $
+                                  {Math.round(
+                                    product.price *
+                                      (1 - product.discountPercentage / 100)
+                                  )}
+                                </p>
+                                <p className="text-sm block line-through font-medium text-gray-500">
+                                  ${product.price}
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -401,7 +421,7 @@ export default function ProductList() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div>)}
             </div>
           </section>
         </main>

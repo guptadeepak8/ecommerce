@@ -37,7 +37,9 @@ export default function ProductDetails() {
   const handleClick=()=>{
     if(user){
       const newItem={product:product.id,qty:1}; 
-      dispatch(fetchCartAsync(newItem))
+      if(product.stock>0){
+        dispatch(fetchCartAsync(newItem))
+      }
     }
     else{
       navigate('/login')

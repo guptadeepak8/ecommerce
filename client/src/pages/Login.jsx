@@ -1,24 +1,28 @@
-  import React from "react";
-  import { useForm } from "react-hook-form";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { loginUserAsync, selectError, selectloggedInUser } from "../store/Auth/authSlice";
+import {
+  loginUserAsync,
+  selectError,
+  selectloggedInUser,
+} from "../store/Auth/authSlice";
 import Cookies from "js-cookie";
-  const Login = () => {
-    const {
-  register,
-      handleSubmit,
-      watch,
-      formState: { errors },
-    } = useForm();
+const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const [show, setShow] = useState(false);
 
-
-const dispatch=useDispatch();
-const user=useSelector(selectloggedInUser)
-const error=useSelector(selectError)
-    return (
+  const dispatch = useDispatch();
+  const user = useSelector(selectloggedInUser);
+  const error = useSelector(selectError);
+  return (
     <>
-    {user && <Navigate to='/' replace={true}/>}
+      {user && <Navigate to="/" replace={true} />}
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 ">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
@@ -35,9 +39,7 @@ const error=useSelector(selectError)
           <form
             noValidate
             className="space-y-6"
-            onSubmit={handleSubmit((data) =>
-                 dispatch(loginUserAsync(data))
-              )}
+            onSubmit={handleSubmit((data) => dispatch(loginUserAsync(data)))}
           >
             <div>
               <label
@@ -49,16 +51,16 @@ const error=useSelector(selectError)
               <div className="mt-2">
                 <input
                   id="email"
-                  {...register(
-                    "email",{
-                     required: "Email Address is required"
-                    }
-                  )}
+                  {...register("email", {
+                    required: "Email Address is required",
+                  })}
                   type="email"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
-              {errors.email && <p className="text-red-500">{errors?.email?.message}*</p>}
+              {errors.email && (
+                <p className="text-red-500">{errors?.email?.message}*</p>
+              )}
             </div>
 
             <div>
@@ -81,15 +83,34 @@ const error=useSelector(selectError)
               <div className="mt-2">
                 <input
                   id="password"
-                  {...register("password",  {required: "Password is required"})}
-                  type="password"
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
+                  type={show?"text":"password"}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
-              {errors.password && <p className="text-red-500">{errors?.password?.message}</p>}
+              {errors.password && (
+                <p className="text-red-500">{errors?.password?.message}</p>
+              )}
               {error && <p className="text-red-500">{error.message}</p>}
             </div>
-
+            <div className="flex items-center gap-x-3 mt-3">
+          <input
+            id="showPassword"
+            name="pass"
+            value="pass"
+            type="checkBox"
+            onChange={()=>setShow(prev=>!prev)}
+            className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+          />
+          <label
+            htmlFor="pass"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
+            Show Password
+          </label>
+          </div>
             <div>
               <button
                 type="submit"
@@ -99,11 +120,11 @@ const error=useSelector(selectError)
               </button>
             </div>
           </form>
-
+         
           <p className="mt-10 text-center text-sm text-gray-500">
             Not a member?{" "}
             <Link
-             to='/register'
+              to="/register"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
             >
               Register here
@@ -111,8 +132,8 @@ const error=useSelector(selectError)
           </p>
         </div>
       </div>
-      </>
-    );
-  };
+    </>
+  );
+};
 
-  export default Login;
+export default Login;

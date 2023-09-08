@@ -19,6 +19,7 @@ import Orders from "./pages/Orders.jsx";
 import ProductDetails from "./pages/ProductDetails.jsx";
 import { fetchLoggedInUserAsync } from "./store/User/userSlice.js";
 import Logout from "./component/Logout.jsx";
+import UserProfile from "./pages/UserProfile.jsx";
 
 
 
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "/order-success/:id",
         element: <OrderSuccess></OrderSuccess>,
+      },
+      {
+        path: "/user-profile",
+        element: <Protected><UserProfile/></Protected>,
       },
     ]
   },
@@ -88,7 +93,7 @@ useEffect(() => {
 
   return (
     <div className="App">
-     {userCheck && <RouterProvider router={router} />}
+     <RouterProvider router={router} />
     </div>
   );
 }

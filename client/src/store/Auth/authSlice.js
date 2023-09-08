@@ -11,13 +11,14 @@ const initialState = {
 
 export const createUserAsync = createAsyncThunk(
   "user/createUser",
-  async (userData) => {
+  async (userData,{rejectWithValue}) => {
     try {
       
       const res = await createUser(userData);
       return res.data;
+    
     } catch (error) {
-      console.log(error);
+      return rejectWithValue(error)
     }
   }
 );
@@ -26,7 +27,6 @@ export const loginUserAsync = createAsyncThunk(
   async (userData,{rejectWithValue}) => {
     try {
       const res = await loginUser(userData);
-      console.log(res);
       return res.data;
     } catch (error) {
       return rejectWithValue(error)
@@ -41,7 +41,7 @@ export const checkUserAsync = createAsyncThunk(
       const res = await checkUser();
       return res.data;
     } catch (error) {
-      console.log(error);
+      return rejectWithValue(error)
     }
       
   }
@@ -49,8 +49,8 @@ export const checkUserAsync = createAsyncThunk(
 
 export const signOutUserAsync = createAsyncThunk(
   "user/signOutUser",
-  async (userId) => {
-      const res = await signOutUser(userId);
+  async () => {
+      const res = await signOutUser();
       return res.data;
   }
 );
@@ -69,8 +69,9 @@ export const authSlice = createSlice({
         state.status = "success";
         state.loggedInUserToken = action.payload ;
       })
-      .addCase(createUserAsync.rejected, (state) => {
+      .addCase(createUserAsync.rejected, (state,action) => {
         state.status = 'failed';
+        state.error=action.payload
       })
       .addCase(loginUserAsync.pending, (state, action) => {
         state.status = "loading";
@@ -113,5 +114,6 @@ export const authSlice = createSlice({
 export const selectloggedInUser = (state) => state.auth.loggedInUserToken;
 export const selectError = (state) => state.auth.error;
 export const selectUserCheck = (state) => state.auth.userCheck;
+export const selectUserStatus = (state) => state.auth.status;
 
 export default authSlice.reducer;

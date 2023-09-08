@@ -6,7 +6,7 @@ exports.fetchAllBrand=async(req,res)=>{
     const brand=await Brand.find({})
     res.status(200).json(brand)
   } catch (error) {
-    console.log(error);
+    res.status(500).json({message:"Something went wrong"})
   }
  
 }
@@ -17,6 +17,6 @@ exports.createBrand=async(req,res)=>{
     const doc =await brand.save();
     res.status(200).json(brand)
   } catch (error) {
-    res.status(400).json({message:"Something went wrong"})
+    res.status(500).json({message:"Something went wrong"})
   }
 }
