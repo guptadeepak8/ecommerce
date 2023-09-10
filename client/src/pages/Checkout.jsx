@@ -30,9 +30,11 @@ export default function Checkout() {
   const dispatch = useDispatch();
   const status=useSelector(selectOrderStatus)
   const userStatus=useSelector(selectUserInfoStatus)
-  const totalAmount = products.reduce(
+
+
+  const totalAmount = products && products.reduce(
     (amount, item) =>
-      Math.round(item.product.price * (1 - item.product.discountPercentage / 100)) * item.qty +
+      Math.round(item.product?.price * (1 - item.product?.discountPercentage / 100)) * item.qty +
       amount,
     0
   );
@@ -42,7 +44,6 @@ export default function Checkout() {
   };
 
   const handleAddress = (e) => {
-   
     setselectedAddress(userInfo.addresses[e.target.value]);
   };
 
@@ -57,7 +58,7 @@ export default function Checkout() {
     }
   }
 
-  if(userStatus=="laoding"){
+  if(userStatus=="loading"){
     return(
       <>
       <h3>Loading...</h3>
@@ -70,7 +71,7 @@ export default function Checkout() {
   return (
     <>
       {!products.length && <Navigate to="/" replace={true} />}
-      {status=="success"?<Navigate to={`/order-success/${currentOrder.id}`} replace={true} />:null}
+      {status=="success" && currentOrder  &&  <Navigate to={`/order-success/${currentOrder.id}`} replace={true} />}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
           <div className="lg:col-span-3">

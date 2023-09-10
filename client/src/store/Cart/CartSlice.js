@@ -10,7 +10,7 @@ const initialState = {
 export const fetchCartAsync = createAsyncThunk(
   "cart/fetchCart",
   async (items) => {
-    
+
     const res = await addCart(items);
     return res.data;
   }
@@ -78,8 +78,10 @@ export const cartSlice = createSlice({
       })
       .addCase(updateCartAsync.fulfilled, (state, action) => {
         state.status = "success";
-        const Index=state.items.findIndex(item=>item.id===action.payload.id)
-        state.items[Index]=action.payload;
+       const updatedItem = action.payload;
+       state.items = state.items.map((item) =>
+       item.id === updatedItem.id ? updatedItem : item
+  );
       })
       .addCase(updateCartAsync.rejected, (state) => {
         state.status = 'failed';

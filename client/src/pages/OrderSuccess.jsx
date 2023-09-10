@@ -9,7 +9,7 @@ const OrderSuccess = () => {
   const params=useParams();
   const user=useSelector(selectloggedInUser);
   const dispatch=useDispatch();
-  const status=useDispatch(selectOrderStatus)
+  const status=useSelector(selectOrderStatus)
 
   useEffect(() => {
    dispatch(resetCartAsync())

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {  useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +11,17 @@ const Cart = () => {
   const items=useSelector(selectCart)
   const dispatch=useDispatch(); 
   const status=useSelector(selectCartStatus)
-  const totalAmount=items && items.reduce((amount,item)=>item.product.price*item.qty+amount,0)
+  const [totalAmount, setTotalAmount] = useState(0);
+
+
+
+  useEffect(() => {
+    const newTotalAmount = items.reduce(
+      (amount, item) => item.product?.price * item.qty + amount,
+      0
+    );
+    setTotalAmount(newTotalAmount);
+  }, [items]);
 
   const handleQuantity = (item, quantity) => {
     dispatch(updateCartAsync({ id: item.id, qty:quantity }));
