@@ -3,20 +3,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { selectloggedInUser } from '../store/Auth/authSlice';
 import { resetCartAsync } from '../store/Cart/CartSlice';
-import { resetOrder } from '../store/order/orderSlice';
+import { resetOrder, selectOrderStatus } from '../store/order/orderSlice';
 
 const OrderSuccess = () => {
   const params=useParams();
   const user=useSelector(selectloggedInUser);
   const dispatch=useDispatch();
-
+  const status=useDispatch(selectOrderStatus)
 
   useEffect(() => {
    dispatch(resetCartAsync())
    dispatch(resetOrder())
   }, [dispatch,user.id])
   
-
+if(status=="loading"){
+  <>
+  <h3>loading....</h3>
+  </>
+}
 
   return (
     <>

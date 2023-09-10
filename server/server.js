@@ -87,6 +87,9 @@ app.use('/auth',authRouter.router)
 app.use('/cart',isAuth(),cartRouter.router)
 app.use('/orders',isAuth(),orderRouter.router)
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 app.listen(PORT,()=>{
   console.log(`api is running on port `);

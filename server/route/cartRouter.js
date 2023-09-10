@@ -8,6 +8,6 @@ const router=express.Router();
 router.post('/',addToCart)
       .get('/',fetchCartByUser)
       .delete('/:id',deleteCart)
-      .patch('/:id',updateCart)
+      .put('/:id',updateCart)
 
 exports.router=router

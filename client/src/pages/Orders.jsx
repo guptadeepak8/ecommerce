@@ -34,7 +34,7 @@ const Orders = () => {
     <>
       <div>
         <h3 className="text-3xl mx-3 my-2">Your All Orders</h3>
-        {orders.length===0? (
+        {orders && orders.length===0? (
           <div className="mt-6 flex flex-col justify-center text-center text-sm text-gray-500">
             <p className="text-2xl font-bold">No Orders</p>
           <Link to="/">
@@ -63,7 +63,7 @@ const Orders = () => {
                   </h3>
                   <div className="flow-root">
                     <ul className="-my-6 divide-y divide-gray-200">
-                      {order.item.map((item) => (
+                      {order && order.item.map((item) => (
                         <li key={item.id} className="flex py-6">
                           <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                             <img

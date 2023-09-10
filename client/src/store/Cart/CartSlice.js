@@ -10,7 +10,7 @@ const initialState = {
 export const fetchCartAsync = createAsyncThunk(
   "cart/fetchCart",
   async (items) => {
-
+    
     const res = await addCart(items);
     return res.data;
   }

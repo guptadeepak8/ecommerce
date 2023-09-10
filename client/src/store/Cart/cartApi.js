@@ -21,7 +21,7 @@ export function fetchItemsById() {
 export function updateCart(item) {
   return new Promise(async (resolve) => {
     const response = await fetch("/cart/"+item.id, {
-      method: "PATCH",
+      method: "PUT",
       body: JSON.stringify(item),
       headers: { "content-type": "application/json" },
     });

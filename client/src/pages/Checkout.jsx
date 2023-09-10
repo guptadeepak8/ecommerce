@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { createOrderAsync, selectCurrentOrder, selectOrderStatus } from "../store/order/orderSlice";
-import { selectUserInfo, updateUserAsync } from "../store/User/userSlice";
+import { selectUserInfo, selectUserInfoStatus, updateUserAsync } from "../store/User/userSlice";
 
 
 export default function Checkout() {
@@ -29,7 +29,7 @@ export default function Checkout() {
   const navigate=useNavigate();
   const dispatch = useDispatch();
   const status=useSelector(selectOrderStatus)
-
+  const userStatus=useSelector(selectUserInfoStatus)
   const totalAmount = products.reduce(
     (amount, item) =>
       Math.round(item.product.price * (1 - item.product.discountPercentage / 100)) * item.qty +
@@ -56,6 +56,16 @@ export default function Checkout() {
       dispatch(createOrderAsync(order))
     }
   }
+
+  if(userStatus=="laoding"){
+    return(
+      <>
+      <h3>Loading...</h3>
+      </>
+    )
+  }
+
+
 
   return (
     <>
@@ -272,7 +282,7 @@ export default function Checkout() {
                 Choose from Existing addresses
               </p>
               <ul>
-                {userInfo.addresses.map((address, index) => (
+                {userInfo && userInfo.addresses.map((address, index) => (
                   <li
                     key={index}
                     className="flex justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200"

@@ -55,7 +55,7 @@ exports.loginUser = async (req, res) => {
       res.cookie('jwt', token, { expires: new Date(Date.now() + 900000), httpOnly: true }).json({ id: user.id });;
     });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: error });
   }
 };
 exports.logout = async (req, res) => {
@@ -67,7 +67,7 @@ exports.logout = async (req, res) => {
     })
     .sendStatus(200)
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: error});
   }
   
 }
@@ -80,7 +80,7 @@ exports.checkUser = async (req, res) => {
       res.sendStatus(401)
     }
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: error });
   }
  
 };

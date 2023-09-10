@@ -53,7 +53,7 @@ export function fetchBrands() {
 //Api for fetching product details
 export function fetchProductDetails(id) {
   return new Promise(async (resolve) =>{
-    const response = await fetch(`/products/${id}`) 
+    const response = await fetch("/products/"+id) 
     const data = await response.json()
     resolve({data})
   }

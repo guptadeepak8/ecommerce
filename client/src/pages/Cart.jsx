@@ -2,17 +2,16 @@ import React from "react";
 import {  useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteCartAsync, selectCart, updateCartAsync } from "../store/Cart/CartSlice";
+import { deleteCartAsync, selectCart, selectCartStatus, updateCartAsync } from "../store/Cart/CartSlice";
 
 
 
 const Cart = () => {
   const [open, setOpen] = useState(true);
   const items=useSelector(selectCart)
-  const [count,setCount]=useState(0)
-  const dispatch=useDispatch();
- 
-  const totalAmount=items.reduce((amount,item)=>item.product.price*item.qty+amount,0)
+  const dispatch=useDispatch(); 
+  const status=useSelector(selectCartStatus)
+  const totalAmount=items && items.reduce((amount,item)=>item.product.price*item.qty+amount,0)
 
   const handleQuantity = (item, quantity) => {
     dispatch(updateCartAsync({ id: item.id, qty:quantity }));
@@ -22,9 +21,16 @@ const Cart = () => {
     dispatch(deleteCartAsync(itemId))
   }
 
+  if(status=="loading"){
+    return (
+      <>
+      <h3>loading...</h3>
+      </>
+    )
+  }
+
   return (
     <>
-    {/* {!user && <Navigate to='/login'/>} */}
     <div className="mx-auto mt-10 max-w-5xl px-2 sm:px-6 lg:px-8">
       <span className="text-3xl ">Your Cart</span>
       <div className="border-t border-gray-200 px-4 py-6 sm:px-6">

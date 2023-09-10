@@ -25,7 +25,7 @@ export default function UserProfile() {
           </h3>     
         </div>
           <p className="mt-0.5 text-sm text-gray-500">Your Addresses :</p>
-          {userInfo.addresses.map((address, index) => (
+          {userInfo && userInfo.addresses.map((address, index) => (
             <div key={index}>   
               <div className="flex justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200">
                 <div className="flex gap-x-4">
